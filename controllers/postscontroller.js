@@ -20,8 +20,29 @@ const index = (req, res) => {
 
 //show --> GET
 const show = (req, res) => {
+ const id = req.params.id;
+ const sql = "SELECT * FROM `posts` WHERE id = ?"
+ connection.query(sql, [id], (err, results) => {
+    if(err) {
+        return res.status(500).json({
+            message: "Errore interno del server"
+        });
+     }
     
-    }
+     if(results.length === 0) {
+        return res.status(404).json({
+            message: "Post non trovato"
+        });
+    
+     } else {
+        return res.status(200).json({
+            status: "success",
+            data: results[0]
+        });
+     }
+ })
+ 
+}
 
 
 //create --> POST
