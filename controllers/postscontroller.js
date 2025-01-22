@@ -1,5 +1,4 @@
-//importo il file array dei post
-const arrayPosts = require("../posts");
+const connection = require("../data/database");
 
 //index --> GET
 const index = (req, res) => {
