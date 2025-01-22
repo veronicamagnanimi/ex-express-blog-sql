@@ -22,6 +22,14 @@ const index = (req, res) => {
 const show = (req, res) => {
  const id = req.params.id;
  const sql = "SELECT * FROM `posts` WHERE id = ?"
+
+ const tagsSql = `
+ SELECT tags.*
+ FROM tags
+ JOIN posts
+ ON tags.post_id = posts.id
+ WHERE posts.id = ?
+ `
  connection.query(sql, [id], (err, results) => {
     if(err) {
         return res.status(500).json({
@@ -35,14 +43,26 @@ const show = (req, res) => {
         });
     
      } else {
+        connection.query(tagsSql, [id], (err, tags) => {
+            if(err) {
+                return res.status(500).json({
+                    message: "Errore interno del server"
+                });
+            }
+
+        const postDetails = {
+            ...results[0],
+            tags: tags
+        };
+
         return res.status(200).json({
             status: "success",
-            data: results[0]
+            data: postDetails
         });
+        })
      }
  })
- 
-}
+ }
 
 
 //create --> POST
